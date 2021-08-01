@@ -24,6 +24,7 @@ from PIL import Image
 from PIL import ImageFile
 from Deep_Res_SE_Unet import Deep_Res_SE_Unet
 from torchvision.models.vgg import vgg16
+from new_model import new_model
 
 
 if __name__ == "__main__":
@@ -36,28 +37,29 @@ if __name__ == "__main__":
 
     file_names = ["emnist_imgs.npy", "emnist_measures.npy", "emnist_labels.npy"]
 
-    exp = "exp_KL_div"
+    exp = "reduced_depth.pt"
     device = "cuda:6"
-    epochs = 30
-    is_model_trained = False
-    ck_pt_path = "/home/thesis_2/model_opt_chp/exp_BCE_psnr_ssim_04.pt"
+    epochs = 5
+    is_model_trained = True
+    ck_pt_path = "/home/thesis_2/model_opt_chp/reduced_depth.pt"
 
     if is_model_trained:
         checkpoint = torch.load(ck_pt_path)
 
-    measurement_images = np.load("/home/thesis_2/Emnist_dataset/emnist_measures.npy")
-    real_images = np.load("/home/thesis_2/Emnist_dataset/emnist_imgs.npy")
-    labels = np.load("/home/thesis_2/Emnist_dataset/emnist_labels.npy")
+    meas_images = np.load("/home/thesis_2/mnist_dataset/mnist_measures.npy")
+    real_images = np.load("/home/thesis_2/mnist_dataset/mnist_imgs.npy")
+    labels = np.load("/home/thesis_2/mnist_dataset/mnist_labels.npy")
 
-    mean, std = 0, 0.111234
-    noice = np.random.normal(mean, std, [128, 128])
-    meas_images = measurement_images + noice
+    # mean, std = 0, 0.111234
+    # noise = np.random.normal(mean, std, [128, 128])
+    # meas_images = meas_images + noise
 
     "resizing to 0-255"
     # norm_image = cv2.normalize(meas_images, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_32F)
     # norm_image = norm_image.astype(np.uint8)
 
-    img_indices = np.arange(112800)
+    # img_indices = np.arange(112800)
+    img_indices = np.arange(60000)
 
     train_indices, test_indices, _, _ = train_test_split(
         img_indices, img_indices, test_size=0.20
@@ -67,19 +69,20 @@ if __name__ == "__main__":
         train_indices, train_indices, test_size=0.20
     )
 
-    train_X = meas_images[train_indices]
-    val_X = meas_images[val_indices]
-    test_X = meas_images[test_indices]
+    train_X = meas_images[train_indices]  # [:70000]
+    val_X = meas_images[val_indices]  # [:70000]
+    test_X = meas_images[test_indices]  # [:70000]
 
-    train_Y = real_images[train_indices]
-    val_Y = real_images[val_indices]
-    test_Y = real_images[test_indices]
+    train_Y = real_images[train_indices]  # [:70000]
+    val_Y = real_images[val_indices]  # [:70000]
+    test_Y = real_images[test_indices]  # [:70000]
 
     train_labels = labels[train_indices]
     test_labels = labels[test_indices]
     val_labels = labels[val_indices]
 
-    model = Deep_Res_SE_Unet()
+    # model = Deep_Res_SE_Unet()
+    model = new_model()
 
     if is_model_trained:
         model.load_state_dict(checkpoint["model"])
@@ -111,10 +114,16 @@ if __name__ == "__main__":
 
     writer = SummaryWriter("tensorboard/" + exp + "/")
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    # scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
+
+    # lambda1 = lambda epochs: 0.65 ** epochs
+    # scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda1)
+    # scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.1)
 
     if is_model_trained:
         # optimizer = optimizer.load.checkpoint['optimizer']
         optimizer.load_state_dict(checkpoint["optimizer"])
+        # scheduler.load_state_dict(checkpoint["scheduler"])
 
     if is_model_trained:
         start_epoch = checkpoint["epoch"]
@@ -126,6 +135,8 @@ if __name__ == "__main__":
     train_losses = []
     val_losses = []
     for epoch in tqdm(range(start_epoch, end_epoch)):
+        # scheduler.step()
+        # print("Epoch:", epoch, "LR:", scheduler.get_lr())
         print("epoch " + str(epoch))
         train_loss = engine.train(train_loader, model, optimizer, device=device)
         val_loss = engine.evaluate(valid_loader, model, device=device)
@@ -150,7 +161,7 @@ if __name__ == "__main__":
         "optimizer": optimizer.state_dict(),
     }
     # torch.save(checkpoint, os.path.join(model_opt_chp, exp + ".pt"))
-    torch.save(checkpoint, os.path.join(model_opt_chp, "exp_kl_div.pt"))
+    torch.save(checkpoint, os.path.join(model_opt_chp, "reduced_depth.pt"))
     # # checkpoint = torch.load('checkpoint.pth')
 
     plt.figure()

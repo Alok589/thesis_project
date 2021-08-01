@@ -13,7 +13,7 @@ from torch.nn.modules import BatchNorm2d
 
 
 class SELayer(nn.Module):
-    def __init__(self, in_ch, out_ch, reduction=2):
+    def __init__(self, in_ch, out_ch, reduction=4):
         super(SELayer, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Sequential(
@@ -178,6 +178,9 @@ class Deep_Res_SE_Unet(nn.Module):
         self.out1 = out_img(32, 64)
         # self.senet_5 = SELayer(64, 64)
         self.out2 = out_img2(64, 1)
+        # self.Dropout = nn.Dropout(0.25)
+
+        # self.initialize_weights()
 
     def forward(self, x):
 
@@ -221,6 +224,7 @@ class Deep_Res_SE_Unet(nn.Module):
         y2_1 = self.conv_bn1(cat1)
         y3_1 = self.residual_5(y2_1)
         y4_1 = y3_1 + y2_1
+        # y5_1 = self.Dropout(y4_1)
         # y5_1 = self.senet_5(y4_1)
         # print("de1", y4_1.shape)
 
@@ -239,6 +243,7 @@ class Deep_Res_SE_Unet(nn.Module):
         y2_3 = self.conv_bn3(cat3)
         y3_3 = self.residual_7(y2_3)
         y4_3 = y3_3 + y2_3
+        # y5_3 = self.Dropout(y4_3)
         # y5_3 = self.senet_7(y4_3)
         # print("de3", y4_3.shape)
 
@@ -251,9 +256,30 @@ class Deep_Res_SE_Unet(nn.Module):
 
         return z2_4
 
+    # def initialize_weights(self):
+    #     for m in self.modules():
+    #         if isinstance(m, nn.Conv2d):
+    #             nn.init.kaiming_uniform_(m.weight)
+    #             if m.bias is not None:
+    #                 nn.init.constant_(m.bias, 0)
+
+    #         if isinstance(m, nn.ConvTranspose2d):
+    #             nn.init.kaiming_uniform_(m.weight)
+    #             if m.bias is not None:
+    #                 nn.init.constant_(m.bias, 0)
+
+    #         elif isinstance(m, nn.BatchNorm2d):
+    #             nn.init.constant_(m.weight, 1)
+    #             nn.init.constant_(m.bias, 0)
+
+    #         elif isinstance(m, nn.Linear):
+    #             nn.init.kaiming_uniform_(m.weight)
+    #             nn.init.constant_(m.bias, 0)
+
 
 if __name__ == "__main__":
     model = Deep_Res_SE_Unet()
+    # model.apply(initialize_weights)
     device = "cuda:5"
     model.to(device)
     input_image = torch.rand(size=(1, 1, 128, 128))

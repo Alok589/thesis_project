@@ -1,7 +1,6 @@
 from skimage import transform as tf
 import torchvision
 from skimage import transform
-from Dense_Unet import Dense_Unet
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -43,7 +42,6 @@ import numpy as np
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
 import torch.multiprocessing as mp
-from Dense_Unet import Dense_Unet
 import pytorch_ssim
 from pytorch_msssim import ssim, ms_ssim
 from piqa import ssim
@@ -55,16 +53,12 @@ from torchvision.models.vgg import vgg16
 from datetime import datetime
 import datetime
 from Deep_Res_SE_Unet import Deep_Res_SE_Unet
-from Res_Unet import Res_Unet
 
 # from test_3 import test_loader
 import pandas as pd
 
-# model = Deep_Res_SE_Unet()
-model = Res_Unet()
-model.load_state_dict(
-    torch.load("/home/thesis_2/model_opt_chp/exp_Res_Unet.pt")["model"]
-)
+model = Deep_Res_SE_Unet()
+model.load_state_dict(torch.load("/home/thesis_2/model_opt_chp/tranfer_0.pt")["model"])
 model.eval()
 device = "cuda:5"
 # test_set_size = 22560
@@ -79,11 +73,12 @@ class SSIMLoss(ssim.SSIM):
 def evaluate_1_image(idx, savePlot):
 
     image_idx = idx  # 12564  # 2126  # 5020  # 50565  # 1086#9022 #99 #1039 #25 #5020
-    x = np.load("/home/thesis_2/Emnist_dataset/emnist_measures.npy")[image_idx]
-    y = np.load("/home/thesis_2/Emnist_dataset/emnist_imgs.npy")[image_idx]
+    x = np.load("/home/thesis_2/mnist_dataset/mnist_measures.npy")[image_idx]
+
+    y = np.load("/home/thesis_2/mnist_dataset/mnist_imgs.npy")[image_idx]
     y = cv2.resize(y, dsize=(128, 128), interpolation=cv2.INTER_CUBIC)
     # y = y.to(device, dtype=torch.tensor)
-    z = np.load("/home/thesis_2/Emnist_dataset/emnist_measures.npy")[image_idx]
+    z = np.load("/home/thesis_2/mnist_dataset/mnist_measures.npy")[image_idx]
 
     x = np.expand_dims(x, 0)
     x = np.expand_dims(x, 0)
