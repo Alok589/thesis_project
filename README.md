@@ -11,4 +11,4 @@ A hybrid deep convolution neural network (RSE-UNet) is shown below.
 
 
 # Camera system
-![](/camera_overview.png)
+![](/camera_overview.PNG)
