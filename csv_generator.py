@@ -1,18 +1,18 @@
 import os, glob
 import pandas as pd
 
-# path = "/home/thesis_2/Res_Unet_csvfiles"
+path = "/home/thesis_2/Res_Unet_csvfiles"
 
-# all_files = glob.glob(os.path.join(path, "*.csv"))
+all_files = glob.glob(os.path.join(path, "*.csv"))
 
-# all_df = []
-# for f in all_files:
-#     df = pd.read_csv(f, sep=",")
-#     df["file"] = f.split("/")[-1]
-#     all_df.append(df)
+all_df = []
+for f in all_files:
+    df = pd.read_csv(f, sep=",")
+    df["file"] = f.split("/")[-1]
+    all_df.append(df)
 
-# merged_df = pd.concat(all_df, ignore_index=True, sort=True)
-# pd.DataFrame(merged_df).to_csv("/home/thesis_2/Res_Unet_csvfiles/Res_Unet.csv")
+merged_df = pd.concat(all_df, ignore_index=True, sort=True)
+pd.DataFrame(merged_df).to_csv("/home/thesis_2/Res_Unet_csvfiles/Res_Unet.csv")
 
 
 df = pd.read_csv("/home/thesis_2/Res_Unet_csvfiles/Res_Unet.csv")
