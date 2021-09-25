@@ -1,99 +1,15 @@
-from skimage import transform as tf
-import torchvision
-from skimage import transform
-
-# from Dense_Unet import Dense_Unet
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import os
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
-from cv2 import exp, transform
-from numpy.lib.npyio import save
-import dataset
-import matplotlib.pyplot as plt
-import torch
-import scipy.io as sio
-import numpy as np
 import os
-import skimage.io
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.nn.functional as F
-from skimage import io
-
-# from torch.utils.tensorboard import SummaryWriter
-from torch.optim import optimizer
-
-# from Deep_Res_Unet import Deep_Res_Unet
-from engine import evaluate
 import cv2
-from pytorch_msssim import ssim, ms_ssim
 import pytorch_ssim
 from piqa import ssim
-from skimage.metrics import structural_similarity as ssim
 from Deep_Res_SE_Unet import Deep_Res_SE_Unet
-
-##################
-from skimage import transform as tf
-import torchvision
-from skimage import transform
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import os
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
-from cv2 import exp, transform
-from numpy.lib.npyio import save
-import dataset
-import matplotlib.pyplot as plt
-import torch
-import scipy.io as sio
 import numpy as np
-import os
-import skimage.io
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.nn.functional as F
-from skimage import io
-
-# from torch.utils.tensorboard import SummaryWriter
-from torch.optim import optimizer
-
-# from Deep_Res_Unet import Deep_Res_Unet
-from engine import evaluate
-import cv2
-from pytorch_msssim import ssim, ms_ssim
-import pytorch_ssim
-from piqa import ssim
-from skimage.metrics import structural_similarity as ssim
-
-# engine.py
-import torch
-import torch.nn as nn
-from tqdm import tqdm
-from torch._C import device
-from torch.optim import optimizer
-import numpy as np
-from torch.nn.parallel import DistributedDataParallel as DDP
-import torch.distributed as dist
-import torch.multiprocessing as mp
 import pytorch_ssim
 from pytorch_msssim import ssim, ms_ssim
 from piqa import ssim
-from torch.autograd.grad_mode import F
-from collections import namedtuple
-import torch
-from torchvision import models
-from torchvision.models.vgg import vgg16
-from datetime import datetime
-import datetime
 from Deep_Res_SE_Unet import Deep_Res_SE_Unet
-
-# from test_3 import test_loader
-import pandas as pd
 from Res_Unet import Res_Unet
 from new_model import new_model
 
@@ -110,10 +26,6 @@ model.load_state_dict(
 )
 model.eval()
 device = "cuda:5"
-
-# X = skimage.io.imread(
-#     "/home/thesis_bk/dataset/measurements/n01440764/n01440764_457..png"
-# )
 
 image_idx = (
     1039  # 52156  # 12564  # 2126  # 5020  # 50565  # 1086#9022 #99 #1039 #25 #5020
