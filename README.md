@@ -7,8 +7,8 @@ then provided as input to the Excitation block. This block extract the channel w
 between them. Therefore emphasizing on most relevant features and suppress
 less important one.
 A hybrid deep convolution neural network (RSE-UNet) is shown below.
-![](testset%evaluation/RES%-%UNet.png)
+![](/RES-UNet.png)
 
 
 # Camera system
-![](testset%evaluation/camera%_%overview.png)
+![](/camera_overview.png)
