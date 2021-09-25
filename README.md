@@ -7,7 +7,7 @@ then provided as input to the Excitation block. This block extract the channel w
 between them. Therefore emphasizing on most relevant features and suppress
 less important one.
 A hybrid deep convolution neural network (RSE-UNet) is shown below.
-![](crypto/deepresunet%20(2)%20(1).png)
+![](RES-UNet.png)
 
 # Libraries Used
 Pytorch, Numpy, Matplotlib, CV2, Tensorboard, Tmux, Sk-learn
