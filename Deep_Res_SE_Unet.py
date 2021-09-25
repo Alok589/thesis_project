@@ -163,24 +163,17 @@ class Deep_Res_SE_Unet(nn.Module):
         self.up_conv1 = conv_transpose(256, 128)
         self.conv_bn1 = conv_bn(256, 128)
         self.residual_5 = residual_block(128, 128)
-        # self.senet_5 = SELayer(128, 128)
 
         self.up_conv2 = conv_transpose(128, 64)
         self.conv_bn2 = conv_bn(128, 64)
         self.residual_6 = residual_block(64, 64)
-        # self.senet_6 = SELayer(64, 64)
 
         self.up_conv3 = conv_transpose_noBN(64, 32)
         self.conv_bn3 = conv_bn(64, 32)
         self.residual_7 = residual_block(32, 32)
-        # self.senet_7 = SELayer(32, 32)
 
         self.out1 = out_img(32, 64)
-        # self.senet_5 = SELayer(64, 64)
         self.out2 = out_img2(64, 1)
-        # self.Dropout = nn.Dropout(0.25)
-
-        # self.initialize_weights()
 
     def forward(self, x):
 
@@ -190,31 +183,24 @@ class Deep_Res_SE_Unet(nn.Module):
         x2_1 = self.residual_1(x1_1)
         x3_1 = x2_1 + x1_1
         x4_1 = self.senet_1(x3_1)
-        # x4_1 = se_net(x3_1.size()[1])
-        # x4_1.forward(x3_1)
-        # print("en1", x3_1.size())
 
         "encoder-2"
         x1_2 = self.conv2(x4_1)
         x2_2 = self.residual_2(x1_2)
         x3_2 = x2_2 + x1_2
         x4_2 = self.senet_2(x3_2)
-        # x4_2 = ChannelSELayer(x3_2)
-        # print("en2", x3_2.size())
 
         "encoder-3"
         x1_3 = self.conv3(x4_2)
         x2_3 = self.residual_3(x1_3)
         x3_3 = x2_3 + x1_3
         x4_3 = self.senet_3(x3_3)
-        # print("en-3", x3_3.size())
 
         "encoder-4"
         x1_4 = self.conv4(x4_3)
         x2_4 = self.residual_4(x1_4)
         x3_4 = x2_4 + x1_4
         x4_4 = self.senet_4(x3_4)
-        # print("en4", x3_4.size())
 
         # decoder
 
@@ -224,9 +210,6 @@ class Deep_Res_SE_Unet(nn.Module):
         y2_1 = self.conv_bn1(cat1)
         y3_1 = self.residual_5(y2_1)
         y4_1 = y3_1 + y2_1
-        # y5_1 = self.Dropout(y4_1)
-        # y5_1 = self.senet_5(y4_1)
-        # print("de1", y4_1.shape)
 
         "decoder-2"
         y1_2 = self.up_conv2(y4_1)
@@ -234,8 +217,6 @@ class Deep_Res_SE_Unet(nn.Module):
         y2_2 = self.conv_bn2(cat2)
         y3_2 = self.residual_6(y2_2)
         y4_2 = y3_2 + y2_2
-        # y5_2 = self.senet_6(y4_2)
-        # print("de2", y4_2.shape)
 
         "decoder-3"
         y1_3 = self.up_conv3(y4_2)
@@ -243,43 +224,16 @@ class Deep_Res_SE_Unet(nn.Module):
         y2_3 = self.conv_bn3(cat3)
         y3_3 = self.residual_7(y2_3)
         y4_3 = y3_3 + y2_3
-        # y5_3 = self.Dropout(y4_3)
-        # y5_3 = self.senet_7(y4_3)
-        # print("de3", y4_3.shape)
 
         "output_block"
         z1_4 = self.out1(y4_3)
-        # print("out1", z1_4.shape)
-        # z2_4 = self.senet_5(z1_4)
         z2_4 = self.out2(z1_4)
-        # print("out2", z2_4.shape)
 
         return z2_4
-
-    # def initialize_weights(self):
-    #     for m in self.modules():
-    #         if isinstance(m, nn.Conv2d):
-    #             nn.init.kaiming_uniform_(m.weight)
-    #             if m.bias is not None:
-    #                 nn.init.constant_(m.bias, 0)
-
-    #         if isinstance(m, nn.ConvTranspose2d):
-    #             nn.init.kaiming_uniform_(m.weight)
-    #             if m.bias is not None:
-    #                 nn.init.constant_(m.bias, 0)
-
-    #         elif isinstance(m, nn.BatchNorm2d):
-    #             nn.init.constant_(m.weight, 1)
-    #             nn.init.constant_(m.bias, 0)
-
-    #         elif isinstance(m, nn.Linear):
-    #             nn.init.kaiming_uniform_(m.weight)
-    #             nn.init.constant_(m.bias, 0)
 
 
 if __name__ == "__main__":
     model = Deep_Res_SE_Unet()
-    # model.apply(initialize_weights)
     device = "cuda:5"
     model.to(device)
     input_image = torch.rand(size=(1, 1, 128, 128))
